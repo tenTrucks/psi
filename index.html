@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LunAruna - Portal Kesehatan Mental</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-danger {
+            background: #ff4757;
+            color: white;
+        }
+
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .menu-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s;
+            text-align: center;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .menu-card h3 {
+            margin-bottom: 10px;
+            font-size: 22px;
+        }
+
+        .menu-card p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .table th, .table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .mood-entry {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .mood-emoji {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .psychologist-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mbti-option {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .mbti-option:hover, .mbti-option.selected {
+            background: #667eea;
+            color: white;
+        }
+
+        .back-btn {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🌙 LunAruna</div>
+            <div class="user-info" id="userInfo"></div>
+        </div>
+
+        <div class="content" id="mainContent"></div>
+    </div>
+
+    <script>
+        // OOP Classes
+        class User {
+            constructor(username, password, name) {
+                this.username = username;
+                this.password = password;
+                this.name = name;
+            }
+        }
+
+        class MoodEntry {
+            constructor(id, userId, mood, note, date) {
+                this.id = id;
+                this.userId = userId;
+                this.mood = mood;
+                this.note = note;
+                this.date = date;
+            }
+        }
+
+        class Appointment {
+            constructor(id, userId, psychologistId, date, time, notes) {
+                this.id = id;
+                this.userId = userId;
+                this.psychologistId = psychologistId;
+                this.date = date;
+                this.time = time;
+                this.notes = notes;
+                this.status = 'pending';
+            }
+        }
+
+        class Psychologist {
+            constructor(id, name, specialization, experience) {
+                this.id = id;
+                this.name = name;
+                this.specialization = specialization;
+                this.experience = experience;
+            }
+        }
+
+        class AuthSystem {
+            constructor() {
+                this.currentUser = null;
+            }
+
+            register(username, password, name) {
+                const users = this.getUsers();
+                if (users.find(u => u.username === username)) {
+                    return { success: false, message: 'Username sudah digunakan' };
+                }
+                const newUser = new User(username, password, name);
+                users.push(newUser);
+                this.saveUsers(users);
+                return { success: true, message: 'Registrasi berhasil' };
+            }
+
+            login(username, password) {
+                const users = this.getUsers();
+                const user = users.find(u => u.username === username && u.password === password);
+                if (user) {
+                    this.currentUser = user;
+                    return { success: true, user };
+                }
+                return { success: false, message: 'Username atau password salah' };
+            }
+
+            logout() {
+                this.currentUser = null;
+            }
+
+            getUsers() {
+                const data = localStorage.getItem('users');
+                return data ? JSON.parse(data) : [];
+            }
+
+            saveUsers(users) {
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+
+            isLoggedIn() {
+                return this.currentUser !== null;
+            }
+        }
+
+        class MoodTracker {
+            constructor(userId) {
+                this.userId = userId;
+            }
+
+            create(mood, note) {
+                const entries = this.getAll();
+                const newEntry = new MoodEntry(
+                    Date.now(),
+                    this.userId,
+                    mood,
+                    note,
+                    new Date().toISOString()
+                );
+                entries.push(newEntry);
+                this.saveAll(entries);
+                return newEntry;
+            }
+
+            getAll() {
+                const data = localStorage.getItem('moodEntries');
+                const all = data ? JSON.parse(data) : [];
+                return all.filter(e => e.userId === this.userId);
+            }
+
+            update(id, mood, note) {
+                const data = localStorage.getItem('moodEntries');
+                let all = data ? JSON.parse(data) : [];
+                const index = all.findIndex(e => e.id === id);
+                if (index !== -1) {
+                    all[index].mood = mood;
+                    all[index].note = note;
+                    all[index].date = new Date().toISOString();
+                    this.saveAll(all);
+                    return true;
+                }
+                return false;
+            }
+
+            delete(id) {
+                const data = localStorage.getItem('moodEntries');
+                let all = data ? JSON.parse(data) : [];
+                all = all.filter(e => e.id !== id);
+                localStorage.setItem('moodEntries', JSON.stringify(all));
+                return true;
+            }
+
+            saveAll(entries) {
+                const data = localStorage.getItem('moodEntries');
+                let all = data ? JSON.parse(data) : [];
+                all = all.filter(e => e.userId !== this.userId);
+                all = all.concat(entries);
+                localStorage.setItem('moodEntries', JSON.stringify(all));
+            }
+        }
+
+        class AppointmentSystem {
+            constructor(userId) {
+                this.userId = userId;
+            }
+
+            create(psychologistId, date, time, notes) {
+                const appointments = this.getAllAppointments();
+                const newAppointment = new Appointment(
+                    Date.now(),
+                    this.userId,
+                    psychologistId,
+                    date,
+                    time,
+                    notes
+                );
+                appointments.push(newAppointment);
+                this.saveAllAppointments(appointments);
+                return newAppointment;
+            }
+
+            getAll() {
+                return this.getAllAppointments().filter(a => a.userId === this.userId);
+            }
+
+            update(id, date, time, notes) {
+                let appointments = this.getAllAppointments();
+                const index = appointments.findIndex(a => a.id === id);
+                if (index !== -1) {
+                    appointments[index].date = date;
+                    appointments[index].time = time;
+                    appointments[index].notes = notes;
+                    this.saveAllAppointments(appointments);
+                    return true;
+                }
+                return false;
+            }
+
+            delete(id) {
+                let appointments = this.getAllAppointments();
+                appointments = appointments.filter(a => a.id !== id);
+                this.saveAllAppointments(appointments);
+                return true;
+            }
+
+            getAllAppointments() {
+                const data = localStorage.getItem('appointments');
+                return data ? JSON.parse(data) : [];
+            }
+
+            saveAllAppointments(appointments) {
+                localStorage.setItem('appointments', JSON.stringify(appointments));
+            }
+        }
+
+        class PsychologistManager {
+            constructor() {
+                this.initPsychologists();
+            }
+
+            initPsychologists() {
+                const existing = localStorage.getItem('psychologists');
+                if (!existing) {
+                    const psychologists = [
+                        new Psychologist(1, 'Dr. Andi Pratama', 'Kecemasan & Depresi', '10 tahun'),
+                        new Psychologist(2, 'Dr. Budi Santoso', 'Relationship & Family', '8 tahun'),
+                        new Psychologist(3, 'Dr. Maya Indah', 'Stress Management', '12 tahun'),
+                        new Psychologist(4, 'Dr. Tazkia Tunaf Chan', 'Career Counseling', '7 tahun'),
+                    ];
+                    localStorage.setItem('psychologists', JSON.stringify(psychologists));
+                }
+            }
+
+            getAll() {
+                const data = localStorage.getItem('psychologists');
+                return data ? JSON.parse(data) : [];
+            }
+
+            getById(id) {
+                return this.getAll().find(p => p.id === id);
+            }
+        }
+
+        // App Controller
+        class LunArunaApp {
+            constructor() {
+                this.auth = new AuthSystem();
+                this.moodTracker = null;
+                this.appointmentSystem = null;
+                this.psychologistManager = new PsychologistManager();
+                this.currentView = 'login';
+                this.editingMoodId = null;
+                this.editingAppointmentId = null;
+                this.init();
+            }
+
+            init() {
+                this.render();
+            }
+
+            render() {
+                const userInfo = document.getElementById('userInfo');
+                const mainContent = document.getElementById('mainContent');
+
+                if (this.auth.isLoggedIn()) {
+                    userInfo.innerHTML = `
+                        <span>Halo, ${this.auth.currentUser.name}!</span>
+                        <button class="btn btn-secondary" onclick="app.logout()">Logout</button>
+                    `;
+                    this.renderDashboard(mainContent);
+                } else {
+                    userInfo.innerHTML = '';
+                    if (this.currentView === 'register') {
+                        this.renderRegister(mainContent);
+                    } else {
+                        this.renderLogin(mainContent);
+                    }
+                }
+            }
+
+            renderLogin(container) {
+                container.innerHTML = `
+                    <h2 style="margin-bottom: 30px; color: #333;">Login ke LunAruna</h2>
+                    <form onsubmit="app.handleLogin(event)">
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" id="loginUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="loginPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                        <button type="button" class="btn btn-secondary" onclick="app.showRegister()">Belum punya akun? Daftar</button>
+                    </form>
+                `;
+            }
+
+            renderRegister(container) {
+                container.innerHTML = `
+                    <h2 style="margin-bottom: 30px; color: #333;">Daftar Akun Baru</h2>
+                    <form onsubmit="app.handleRegister(event)">
+                        <div class="form-group">
+                            <label>Nama Lengkap</label>
+                            <input type="text" id="regName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" id="regUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="regPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Daftar</button>
+                        <button type="button" class="btn btn-secondary" onclick="app.showLogin()">Sudah punya akun? Login</button>
+                    </form>
+                `;
+            }
+
+            renderDashboard(container) {
+                if (this.currentView === 'mood') {
+                    this.renderMoodTracker(container);
+                } else if (this.currentView === 'mbti') {
+                    this.renderMBTI(container);
+                } else if (this.currentView === 'appointment') {
+                    this.renderAppointment(container);
+                } else {
+                    container.innerHTML = `
+                        <h2 style="margin-bottom: 30px; color: #333;">Selamat Datang di LunAruna</h2>
+                        <p style="margin-bottom: 30px; color: #666;">Platform kesehatan mental untuk membantu Anda memahami dan mengelola emosi dengan lebih baik.</p>
+                        <div class="menu-grid">
+                            <div class="menu-card" onclick="app.showMoodTracker()">
+                                <h3>📊 Mood Tracker</h3>
+                                <p>Catat dan pantau mood harian Anda</p>
+                            </div>
+                            <div class="menu-card" onclick="app.showMBTI()">
+                                <h3>🧠 Tes MBTI</h3>
+                                <p>Kenali tipe kepribadian Anda</p>
+                            </div>
+                            <div class="menu-card" onclick="app.showAppointment()">
+                                <h3>👨‍⚕️ Konseling</h3>
+                                <p>Buat janji dengan psikolog</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            renderMoodTracker(container) {
+                if (!this.moodTracker) {
+                    this.moodTracker = new MoodTracker(this.auth.currentUser.username);
+                }
+                
+                const entries = this.moodTracker.getAll();
+                const isEditing = this.editingMoodId !== null;
+                const editEntry = isEditing ? entries.find(e => e.id === this.editingMoodId) : null;
+
+                container.innerHTML = `
+                    <button class="btn btn-secondary back-btn" onclick="app.showDashboard()">← Kembali</button>
+                    <h2 style="margin-bottom: 30px; color: #333;">Mood Tracker</h2>
+                    
+                    <form onsubmit="app.handleMoodSubmit(event)" style="margin-bottom: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                        <h3 style="margin-bottom: 20px;">${isEditing ? 'Edit Mood' : 'Tambah Mood Baru'}</h3>
+                        <div class="form-group">
+                            <label>Bagaimana perasaan Anda hari ini?</label>
+                            <select id="moodSelect" required>
+                                <option value="">Pilih mood...</option>
+                                <option value="😊 Sangat Bahagia" ${editEntry?.mood === '😊 Sangat Bahagia' ? 'selected' : ''}>😊 Sangat Bahagia</option>
+                                <option value="🙂 Bahagia" ${editEntry?.mood === '🙂 Bahagia' ? 'selected' : ''}>🙂 Bahagia</option>
+                                <option value="😐 Biasa Saja" ${editEntry?.mood === '😐 Biasa Saja' ? 'selected' : ''}>😐 Biasa Saja</option>
+                                <option value="😔 Sedih" ${editEntry?.mood === '😔 Sedih' ? 'selected' : ''}>😔 Sedih</option>
+                                <option value="😢 Sangat Sedih" ${editEntry?.mood === '😢 Sangat Sedih' ? 'selected' : ''}>😢 Sangat Sedih</option>
+                                <option value="😠 Marah" ${editEntry?.mood === '😠 Marah' ? 'selected' : ''}>😠 Marah</option>
+                                <option value="😰 Cemas" ${editEntry?.mood === '😰 Cemas' ? 'selected' : ''}>😰 Cemas</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Catatan (opsional)</label>
+                            <textarea id="moodNote" rows="3" placeholder="Ceritakan apa yang Anda rasakan...">${editEntry?.note || ''}</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">${isEditing ? 'Update' : 'Simpan'}</button>
+                        ${isEditing ? '<button type="button" class="btn btn-secondary" onclick="app.cancelEditMood()">Batal</button>' : ''}
+                    </form>
+
+                    <h3 style="margin-bottom: 20px;">Riwayat Mood</h3>
+                    ${entries.length === 0 ? '<p style="color: #999;">Belum ada catatan mood.</p>' : entries.map(entry => `
+                        <div class="mood-entry">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <span class="mood-emoji">${entry.mood.split(' ')[0]}</span>
+                                    <strong>${entry.mood}</strong>
+                                    <p style="margin-top: 5px; color: #666;">${entry.note || '-'}</p>
+                                    <small style="color: #999;">${new Date(entry.date).toLocaleString('id-ID')}</small>
+                                </div>
+                                <div>
+                                    <button class="btn btn-secondary" onclick="app.editMood(${entry.id})">Edit</button>
+                                    <button class="btn btn-danger" onclick="app.deleteMood(${entry.id})">Hapus</button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                `;
+            }
+
+            renderMBTI(container) {
+                container.innerHTML = `
+                    <button class="btn btn-secondary back-btn" onclick="app.showDashboard()">← Kembali</button>
+                    <h2 style="margin-bottom: 30px; color: #333;">Tes MBTI</h2>
+                    <div style="background: #f8f9fa; padding: 30px; border-radius: 10px;">
+                        <p style="margin-bottom: 20px;">MBTI (Myers-Briggs Type Indicator) membantu Anda memahami tipe kepribadian dan preferensi Anda.</p>
+                        
+                        <div style="margin-bottom: 30px;">
+                            <h3 style="margin-bottom: 15px;">1. Energi Anda berasal dari:</h3>
+                            <div class="mbti-option" onclick="app.selectMBTI(this, 'E')">E - Ekstrovert (Interaksi sosial)</div>
+                            <div class="mbti-option" onclick="app.selectMBTI(this, 'I')">I - Introvert (Waktu sendiri)</div>
+                        </div>
+
+                        <div style="margin-bottom: 30px;">
+                            <h3 style="margin-bottom: 15px;">2. Cara Anda memproses informasi:</h3>
+                            <div class="mbti-option" onclick="app.selectMBTI(this, 'S')">S - Sensing (Fakta & detail)</div>
+                            <div class="mbti-option" onclick="app.selectMBTI(this, 'N')">N - Intuition (Pola & kemungkinan)</div>
+                        </div>
+
+                        <div style="margin-bottom: 30px;">
+                            <h3 style="margin-bottom: 15px;">3. Cara Anda membuat keputusan:</h3>
+                            <div class="mbti-option" onclick="app.selectMBTI(this, 'T')">T - Thinking (Logika)</div>
+                            <div class="mbti-option" onclick="app.selectMBTI(this, 'F')">F - Feeling (Nilai & harmoni)</div>
+                        </div>
+
+                        <div style="margin-bottom: 30px;">
+                            <h3 style="margin-bottom: 15px;">4. Gaya hidup Anda:</h3>
+                            <div class="mbti-option" onclick="app.selectMBTI(this, 'J')">J - Judging (Terstruktur & terencana)</div>
+                            <div class="mbti-option" onclick="app.selectMBTI(this, 'P')">P - Perceiving (Fleksibel & spontan)</div>
+                        </div>
+
+                        <div id="mbtiResult"></div>
+                    </div>
+                `;
+            }
+
+            renderAppointment(container) {
+                if (!this.appointmentSystem) {
+                    this.appointmentSystem = new AppointmentSystem(this.auth.currentUser.username);
+                }
+
+                const appointments = this.appointmentSystem.getAll();
+                const psychologists = this.psychologistManager.getAll();
+                const isEditing = this.editingAppointmentId !== null;
+                const editAppt = isEditing ? appointments.find(a => a.id === this.editingAppointmentId) : null;
+
+                container.innerHTML = `
+                    <button class="btn btn-secondary back-btn" onclick="app.showDashboard()">← Kembali</button>
+                    <h2 style="margin-bottom: 30px; color: #333;">Konseling Psikolog</h2>
+
+                    <form onsubmit="app.handleAppointmentSubmit(event)" style="margin-bottom: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                        <h3 style="margin-bottom: 20px;">${isEditing ? 'Edit Appointment' : 'Buat Appointment Baru'}</h3>
+                        <div class="form-group">
+                            <label>Pilih Psikolog</label>
+                            <select id="psychologistSelect" required>
+                                <option value="">Pilih psikolog...</option>
+                                ${psychologists.map(p => `
+                                    <option value="${p.id}" ${editAppt?.psychologistId === p.id ? 'selected' : ''}>
+                                        ${p.name} - ${p.specialization}
+                                    </option>
+                                `).join('')}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Tanggal</label>
+                            <input type="date" id="appointmentDate" value="${editAppt?.date || ''}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Waktu</label>
+                            <input type="time" id="appointmentTime" value="${editAppt?.time || ''}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Catatan / Keluhan</label>
+                            <textarea id="appointmentNotes" rows="3" placeholder="Jelaskan keluhan atau topik yang ingin dibahas...">${editAppt?.notes || ''}</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">${isEditing ? 'Update' : 'Buat Appointment'}</button>
+                        ${isEditing ? '<button type="button" class="btn btn-secondary" onclick="app.cancelEditAppointment()">Batal</button>' : ''}
+                    </form>
+
+                    <h3 style="margin-bottom: 20px;">Daftar Psikolog</h3>
+                    ${psychologists.map(p => `
+                        <div class="psychologist-card">
+                            <div>
+                                <strong>${p.name}</strong>
+                                <p style="color: #666; margin-top: 5px;">${p.specialization}</p>
+                                <small style="color: #999;">Pengalaman: ${p.experience}</small>
+                            </div>
+                        </div>
+                    `).join('')}
+
+                    <h3 style="margin-bottom: 20px; margin-top: 30px;">Appointment Saya</h3>
+                    ${appointments.length === 0 ? '<p style="color: #999;">Belum ada appointment.</p>' : `
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Psikolog</th>
+                                    <th>Tanggal & Waktu</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${appointments.map(a => {
+                                    const psych = this.psychologistManager.getById(a.psychologistId);
+                                    return `
+                                        <tr>
+                                            <td>${psych ? psych.name : 'Unknown'}</td>
+                                            <td>${new Date(a.date).toLocaleDateString('id-ID')} ${a.time}</td>
+                                            <td><span style="color: ${a.status === 'pending' ? '#ff9800' : '#4caf50'}">${a.status}</span></td>
+                                            <td>
+                                                <button class="btn btn-secondary" onclick="app.editAppointment(${a.id})">Edit</button>
+                                                <button class="btn btn-danger" onclick="app.deleteAppointment(${a.id})">Hapus</button>
+                                            </td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    `}
+                `;
+            }
+
+            // Event Handlers
+            handleLogin(e) {
+                e.preventDefault();
+                const username = document.getElementById('loginUsername').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                const result = this.auth.login(username, password);
+                if (result.success) {
+                    this.currentView = 'dashboard';
+                    this.render();
+                } else {
+                    alert(result.message);
+                }
+            }
+
+            handleRegister(e) {
+                e.preventDefault();
+                const name = document.getElementById('regName').value;
+                const username = document.getElementById('regUsername').value;
+                const password = document.getElementById('regPassword').value;
+                
+                const result = this.auth.register(username, password, name);
+                if (result.success) {
+                    alert('Registrasi berhasil! Silakan login.');
+                    this.showLogin();
+                } else {
+                    alert(result.message);
+                }
+            }
+
+            handleMoodSubmit(e) {
+                e.preventDefault();
+                const mood = document.getElementById('moodSelect').value;
+                const note = document.getElementById('moodNote').value;
+                
+                if (this.editingMoodId) {
+                    this.moodTracker.update(this.editingMoodId, mood, note);
+                    alert('Mood berhasil diupdate!');
+                    this.editingMoodId = null;
+                } else {
+                    this.moodTracker.create(mood, note);
+                    alert('Mood berhasil disimpan!');
+                }
+                
+                this.render();
+            }
+
+            handleAppointmentSubmit(e) {
+                e.preventDefault();
+                const psychologistId = parseInt(document.getElementById('psychologistSelect').value);
+                const date = document.getElementById('appointmentDate').value;
+                const time = document.getElementById('appointmentTime').value;
+                const notes = document.getElementById('appointmentNotes').value;
+                
+                if (this.editingAppointmentId) {
+                    this.appointmentSystem.update(this.editingAppointmentId, date, time, notes);
+                    alert('Appointment berhasil diupdate!');
+                    this.editingAppointmentId = null;
+                } else {
+                    this.appointmentSystem.create(psychologistId, date, time, notes);
+                    alert('Appointment berhasil dibuat!');
+                }
+                
+                this.render();
+            }
+
+            // Navigation
+            showLogin() {
+                this.currentView = 'login';
+                this.render();
+            }
+
+            showRegister() {
+                this.currentView = 'register';
+                this.render();
+            }
+
+            showDashboard() {
+                this.currentView = 'dashboard';
+                this.editingMoodId = null;
+                this.editingAppointmentId = null;
+                this.render();
+            }
+
+            showMoodTracker() {
+                this.currentView = 'mood';
+                this.render();
+            }
+
+            showMBTI() {
+                this.currentView = 'mbti';
+                this.mbtiAnswers = [];
+                this.render();
+            }
+
+            showAppointment() {
+                this.currentView = 'appointment';
+                this.render();
+            }
+
+            logout() {
+                if (confirm('Yakin ingin logout?')) {
+                    this.auth.logout();
+                    this.currentView = 'login';
+                    this.moodTracker = null;
+                    this.appointmentSystem = null;
+                    this.render();
+                }
+            }
+
+            // CRUD Operations
+            editMood(id) {
+                this.editingMoodId = id;
+                this.render();
+            }
+
+            cancelEditMood() {
+                this.editingMoodId = null;
+                this.render();
+            }
+
+            deleteMood(id) {
+                if (confirm('Yakin ingin menghapus mood ini?')) {
+                    this.moodTracker.delete(id);
+                    this.render();
+                }
+            }
+
+            editAppointment(id) {
+                this.editingAppointmentId = id;
+                this.render();
+            }
+
+            cancelEditAppointment() {
+                this.editingAppointmentId = null;
+                this.render();
+            }
+
+            deleteAppointment(id) {
+                if (confirm('Yakin ingin menghapus appointment ini?')) {
+                    this.appointmentSystem.delete(id);
+                    this.render();
+                }
+            }
+
+            // MBTI Quiz
+            selectMBTI(element, type) {
+                const parent = element.parentElement;
+                const options = parent.querySelectorAll('.mbti-option');
+                options.forEach(opt => opt.classList.remove('selected'));
+                element.classList.add('selected');
+
+                if (!this.mbtiAnswers) {
+                    this.mbtiAnswers = [];
+                }
+
+                // Remove previous answer for this question
+                this.mbtiAnswers = this.mbtiAnswers.filter(a => !['E','I','S','N','T','F','J','P'].includes(a) || a === type);
+                this.mbtiAnswers.push(type);
+
+                // Check if all 4 questions answered
+                const uniqueTypes = new Set(this.mbtiAnswers);
+                if (uniqueTypes.size === 4) {
+                    this.showMBTIResult();
+                }
+            }
+
+            showMBTIResult() {
+                const result = this.mbtiAnswers.join('');
+                const resultDiv = document.getElementById('mbtiResult');
+                
+                const descriptions = {
+                    'INTJ': 'Arsitek - Pemikir strategis dengan rencana untuk segala hal',
+                    'INTP': 'Logician - Penemu inovatif dengan kehausan akan pengetahuan',
+                    'ENTJ': 'Commander - Pemimpin yang berani dan imajinatif',
+                    'ENTP': 'Debater - Pemikir cerdas yang tidak bisa menolak tantangan intelektual',
+                    'INFJ': 'Advocate - Idealis yang tenang namun inspiratif',
+                    'INFP': 'Mediator - Orang yang puitis, baik hati, dan altruistik',
+                    'ENFJ': 'Protagonist - Pemimpin karismatik dan inspiratif',
+                    'ENFP': 'Campaigner - Antusias, kreatif, dan sosial',
+                    'ISTJ': 'Logistician - Praktis dan berbasis fakta',
+                    'ISFJ': 'Defender - Pelindung yang dedikasi dan hangat',
+                    'ESTJ': 'Executive - Administrator yang sangat baik',
+                    'ESFJ': 'Consul - Sangat peduli, sosial, dan populer',
+                    'ISTP': 'Virtuoso - Eksperimentalis yang berani dan praktis',
+                    'ISFP': 'Adventurer - Artis yang fleksibel dan menawan',
+                    'ESTP': 'Entrepreneur - Cerdas, enerjik, dan sangat perseptif',
+                    'ESFP': 'Entertainer - Spontan, enerjik, dan antusias'
+                };
+
+                const description = descriptions[result] || 'Tipe kepribadian unik';
+
+                resultDiv.innerHTML = `
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px; margin-top: 30px;">
+                        <h2 style="margin-bottom: 15px;">Hasil Tes MBTI Anda:</h2>
+                        <h1 style="font-size: 48px; margin-bottom: 10px;">${result}</h1>
+                        <p style="font-size: 18px; opacity: 0.9;">${description}</p>
+                        <button class="btn btn-secondary" onclick="app.showMBTI()" style="margin-top: 20px;">Ulangi Tes</button>
+                    </div>
+                `;
+            }
+        }
+
+        // Initialize App
+        const app = new LunArunaApp();
+    </script>
+</body>
+</html>
